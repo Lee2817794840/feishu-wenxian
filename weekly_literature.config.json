@@ -1,0 +1,84 @@
+{
+    "template_path":  "00｜智能设计｜前沿论文整理模板.md",
+    "output_root":  ".",
+    "group_name":  "智能设计小组",
+    "semester_name":  "2026秋",
+    "responsible_name":  "王力",
+    "teaching_week_1_monday":  "2026-09-14",
+    "semester_end_date":  null,
+    "topics":  [
+                   {
+                       "name":  "基于深度强化学习的桁架结构设计",
+                       "research_question":  "将桁架拓扑、节点位置与离散截面设计建模为序贯决策，在应力、位移、稳定性和可施工性约束下优化重量或材料用量，并通过有限元分析验证策略的效率与泛化能力。",
+                       "keywords":  [
+                                        "桁架结构 深度强化学习 拓扑优化 截面优化",
+                                        "truss design deep reinforcement learning",
+                                        "truss topology optimization reinforcement learning",
+                                        "truss sizing shape optimization sequential decision making",
+                                        "graph neural network reinforcement learning structural design",
+                                        "constrained reinforcement learning structural optimization finite element analysis",
+                                        "PPO DQN actor critic truss optimization"
+                                    ],
+                       "search_queries":  [
+                                              "(truss OR lattice) AND (\"deep reinforcement learning\" OR \"reinforcement learning\") AND (design OR optimization)",
+                                              "(\"structural optimization\" OR \"structural design\") AND (\"graph neural network\" OR \"constrained reinforcement learning\")"
+                                          ],
+                       "cross_domain_methods":  [
+                                                    "图结构上的序贯决策",
+                                                    "分层动作空间与约束动作掩码",
+                                                    "约束强化学习",
+                                                    "代理模型与真实求解器校验",
+                                                    "跨任务策略迁移"
+                                                ]
+                   },
+                   {
+                       "name":  "土木工程图纸理解与识别",
+                       "research_question":  "从建筑、结构及施工图的栅格图像或矢量CAD中识别构件、文字、尺寸与符号，提取几何拓扑关系及语义信息，支持图纸问答、模型重建与一致性核查。",
+                       "keywords":  [
+                                        "土木工程图纸 施工图 结构图 识别 理解",
+                                        "construction drawing structural drawing understanding recognition",
+                                        "architectural floor plan recognition vectorization graph extraction",
+                                        "engineering drawing OCR dimension symbol recognition",
+                                        "large format engineering drawing vision language model visual question answering",
+                                        "CAD drawing parsing raster to vector BIM reconstruction",
+                                        "rebar drawing recognition text symbol association"
+                                    ],
+                       "search_queries":  [
+                                              "(\"construction drawing\" OR \"structural drawing\" OR \"architectural drawing\") AND (recognition OR understanding OR parsing)",
+                                              "(\"floor plan\" OR \"engineering drawing\") AND (OCR OR vectorization OR \"graph extraction\" OR \"vision language\" OR benchmark)"
+                                          ],
+                       "cross_domain_methods":  [
+                                                    "文档版面分析与OCR",
+                                                    "高分辨率图像的分块检索与证据聚合",
+                                                    "视觉语言模型的定位与问答",
+                                                    "图结构预测",
+                                                    "几何拓扑一致性约束"
+                                                ]
+                   }
+               ],
+    "schedule":  {
+                     "timezone":  "Asia/Shanghai",
+                     "weekday":  "FRIDAY",
+                     "time":  "09:00",
+                     "status":  "registered",
+                     "backend":  "windows_task_scheduler",
+                     "task_name":  "Codex-Weekly-Literature-ZhinengSheji"
+                 },
+    "selection":  {
+                      "lookback_days":  7,
+                      "civil_engineering_target":  2,
+                      "cross_domain_target":  1
+                  },
+    "feishu":  {
+                   "workspace_url":  "https://ocn1qaau41u6.feishu.cn/drive/folder/NvHlf1VWYl3LmRd2jz1cvVFnnke",
+                   "workspace_folder_token":  "NvHlf1VWYl3LmRd2jz1cvVFnnke",
+                   "target_folder_token":  "NvHlf1VWYl3LmRd2jz1cvVFnnke",
+                   "status":  "connected_and_upload_verified",
+                   "output_type":  "editable_feishu_docx",
+                   "app_setup_status":  "verified",
+                   "enabled":  true,
+                   "upload_program":  "scripts/feishu-upload.ps1",
+                   "target_folder_url":  "https://ocn1qaau41u6.feishu.cn/drive/folder/NvHlf1VWYl3LmRd2jz1cvVFnnke",
+                   "last_verified_doc_url":  "https://ocn1qaau41u6.feishu.cn/docx/GSyVdmz2EoQPpSxsaRJcHLTEnne"
+               }
+}
