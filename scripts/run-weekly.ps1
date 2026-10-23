@@ -36,8 +36,11 @@ if ($CheckOnly) {
     [pscustomobject]@{Codex=$codexPath; Week=$week; Date=$now.ToString('yyyy-MM-dd'); Group=$config.group_name; Semester=$config.semester_name}
     exit 0
 }
-# Feishu upload phase is gated by config (feishu.enabled) and the existence of credentials.
-$feishuEnabled = $config.feishu.enabled -eq $true -and (Test-Path -LiteralPath (Join-Path $projectRoot 'feishu.local.json'))
+# An enabled upload must fail visibly if credentials are missing.
+$feishuEnabled = $config.feishu.enabled -eq $true
+if ($feishuEnabled -and -not (Test-Path -LiteralPath (Join-Path $projectRoot 'feishu.local.json'))) {
+    throw 'Feishu upload is enabled but feishu.local.json is missing.'
+}
 $outputRoot = [IO.Path]::GetFullPath((Join-Path $projectRoot $config.output_root))
 if ($outputRoot -ne $projectRoot -and -not $outputRoot.StartsWith($projectRoot + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) { throw 'Output root must stay inside this project.' }
 $semesterRoot = Join-Path (Join-Path $outputRoot $config.group_name) $config.semester_name
@@ -48,7 +51,7 @@ if (Test-Path -LiteralPath $semesterRoot) {
         Write-Output ('Report already exists; preserved: ' + $existingReport.FullName)
         # Even when local generation is skipped, retry pending Feishu uploads so a missed upload is not lost.
         if ($feishuEnabled) {
-            & (Join-Path $PSScriptRoot 'feishu-upload.ps1')
+            & (Join-Path $PSScriptRoot 'feishu-upload.ps1') -ReportPath $existingReport.FullName
             if ($LASTEXITCODE -ne 0) {
                 Write-Output ("Feishu upload failed (exit $LASTEXITCODE). Local report preserved; upload will be retried on next run.")
                 exit $LASTEXITCODE
@@ -68,10 +71,14 @@ $runPrompt = "Read and follow '$relativePrompt.md' and weekly_literature.config.
 $arguments = @('--search', 'exec', '--approve-for-me', '--skip-git-repo-check', '--cd', ('"' + $projectRoot + '"'), '--color', 'never', '--json', '--output-last-message', ('"' + $summaryPath + '"'), ('"' + $runPrompt + '"'))
 $process = Start-Process -FilePath $codexPath -ArgumentList $arguments -WorkingDirectory $projectRoot -WindowStyle Hidden -RedirectStandardOutput $stdoutPath -RedirectStandardError $stderrPath -Wait -PassThru
 if ($process.ExitCode -ne 0) { throw "Codex failed (exit $($process.ExitCode)). See $stderrPath" }
+$generatedReports = @(Get-ChildItem -LiteralPath $semesterRoot -File -Filter ($weekPrefix + '*.md') -ErrorAction SilentlyContinue)
+if ($generatedReports.Count -ne 1 -or $generatedReports[0].Length -eq 0) {
+    throw "Generation incomplete: expected one nonempty teaching-week $week report. No upload attempted. See $summaryPath"
+}
 Write-Output "Completed. Summary: $summaryPath"
-# After local generation, upload any pending weekly reports to Feishu (idempotent, retries incomplete uploads).
+# Upload only the verified current-week artifact, never count an older report as this week's success.
 if ($feishuEnabled) {
-    & (Join-Path $PSScriptRoot 'feishu-upload.ps1')
+    & (Join-Path $PSScriptRoot 'feishu-upload.ps1') -ReportPath $generatedReports[0].FullName
     if ($LASTEXITCODE -ne 0) {
         Write-Output ("Feishu upload failed (exit $LASTEXITCODE). Local report preserved; upload will be retried on next run.")
         exit $LASTEXITCODE

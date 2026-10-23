@@ -19,8 +19,8 @@ $action = New-ScheduledTaskAction -Execute $powershellPath -Argument $arguments 
 $trigger = New-ScheduledTaskTrigger -Weekly -WeeksInterval 1 -DaysOfWeek Friday -At '09:00'
 $identity = [Security.Principal.WindowsIdentity]::GetCurrent().Name
 $principal = New-ScheduledTaskPrincipal -UserId $identity -LogonType Interactive -RunLevel Limited
-$settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -MultipleInstances IgnoreNew -ExecutionTimeLimit (New-TimeSpan -Hours 2)
-$task = New-ScheduledTask -Action $action -Trigger $trigger -Principal $principal -Settings $settings -Description 'Weekly literature report. Friday 09:00 Asia/Shanghai. Workspace write, current signed-in Codex user. No Feishu upload.'
+$settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -MultipleInstances IgnoreNew -ExecutionTimeLimit (New-TimeSpan -Hours 2) -RestartCount 2 -RestartInterval (New-TimeSpan -Minutes 30)
+$task = New-ScheduledTask -Action $action -Trigger $trigger -Principal $principal -Settings $settings -Description 'Weekly literature report and Feishu archive. Friday 09:00 Asia/Shanghai. Fail if the current-week report is absent; retry failures twice every 30 minutes.'
 if ($Preview) {
     $task | Select-Object @{Name='TaskName';Expression={$taskName}},Actions,Triggers,Principal,Settings
     exit 0
